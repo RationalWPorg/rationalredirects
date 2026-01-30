@@ -1,0 +1,149 @@
+/**
+ * RationalRedirects Admin Styles
+ *
+ * Styling for the settings and redirect manager pages.
+ */
+
+.rationalredirects-settings {
+	max-width: 800px;
+}
+
+.rationalredirects-settings h2 {
+	margin-top: 2em;
+	padding-bottom: 0.5em;
+	border-bottom: 1px solid #c3c4c7;
+}
+
+.rationalredirects-settings .form-table th {
+	padding-left: 0;
+}
+
+.rationalredirects-settings .form-table td {
+	padding-left: 0;
+}
+
+.rationalredirects-settings .description {
+	color: #646970;
+	font-style: italic;
+	margin-top: 4px;
+}
+
+/* Settings Save Message */
+#rationalredirects-settings-message {
+	margin: 15px 0;
+}
+
+/* Hide default WordPress settings-updated notice */
+.rationalredirects-settings > .notice:not(#rationalredirects-settings-message) {
+	display: none;
+}
+
+/* Redirect Manager */
+.rationalredirects-redirect-manager {
+	margin-top: 20px;
+}
+
+.rationalredirects-table {
+	margin-top: 10px;
+}
+
+.rationalredirects-table .column-from {
+	width: 20%;
+}
+
+.rationalredirects-table .column-to {
+	width: 28%;
+}
+
+.rationalredirects-table .column-status {
+	width: 18%;
+}
+
+.rationalredirects-table .column-regex {
+	width: 8%;
+	text-align: center;
+}
+
+.rationalredirects-table .column-hits {
+	width: 8%;
+}
+
+.rationalredirects-table .column-actions {
+	width: 10%;
+}
+
+.rationalredirects-table .column-from code {
+	background: #f0f0f1;
+	padding: 2px 6px;
+	border-radius: 3px;
+}
+
+.rationalredirects-table .rationalredirects-add-row {
+	background: #f6f7f7;
+}
+
+.rationalredirects-table .rationalredirects-add-row input[type="text"],
+.rationalredirects-table .rationalredirects-add-row input[type="url"] {
+	width: 100%;
+	max-width: none;
+}
+
+.rationalredirects-table .rationalredirects-add-row select {
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+}
+
+.rationalredirects-table .rationalredirects-add-row input[type="checkbox"] {
+	margin: 0;
+}
+
+.rationalredirects-table .rationalredirects-add-row .column-regex {
+	text-align: center;
+}
+
+.rationalredirects-table .no-redirects td {
+	text-align: center;
+	padding: 20px;
+	color: #646970;
+	font-style: italic;
+}
+
+.rationalredirects-table .button-link-delete {
+	color: #b32d2e;
+}
+
+.rationalredirects-table .button-link-delete:hover {
+	color: #a00;
+}
+
+#rationalredirects-message {
+	margin-top: 15px;
+}
+
+.rationalredirects-regex-badge {
+	display: inline-block;
+	background: #2271b1;
+	color: #fff;
+	font-size: 11px;
+	font-weight: 600;
+	padding: 2px 6px;
+	border-radius: 3px;
+	text-transform: uppercase;
+}
+
+/* Redirect Manager Header */
+.rationalredirects-redirect-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 2em;
+	padding-bottom: 0.5em;
+	border-bottom: 1px solid #c3c4c7;
+}
+
+.rationalredirects-redirect-header h2 {
+	margin: 0;
+	padding: 0;
+	border: none;
+}
