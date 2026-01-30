@@ -147,3 +147,183 @@
 	padding: 0;
 	border: none;
 }
+
+/* Import Tab */
+.rationalredirects-import-wrap {
+	margin-top: 20px;
+}
+
+.rationalredirects-import-sources {
+	margin-top: 20px;
+}
+
+.rationalredirects-import-loading {
+	padding: 20px;
+	color: #666;
+}
+
+.rationalredirects-import-loading .spinner {
+	float: left;
+	margin-right: 10px;
+}
+
+.rationalredirects-import-empty {
+	padding: 40px;
+	text-align: center;
+	background: #f9f9f9;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.rationalredirects-import-empty .dashicons {
+	font-size: 48px;
+	width: 48px;
+	height: 48px;
+	color: #ccc;
+	margin-bottom: 10px;
+}
+
+.rationalredirects-import-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 20px;
+}
+
+.rationalredirects-import-card {
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.rationalredirects-import-card-header {
+	padding: 15px;
+	background: #f9f9f9;
+	border-bottom: 1px solid #ddd;
+}
+
+.rationalredirects-import-card-header h3 {
+	margin: 0;
+	font-size: 14px;
+}
+
+.rationalredirects-import-card-body {
+	padding: 15px;
+}
+
+.rationalredirects-import-card-body .description {
+	margin-top: 0;
+}
+
+.rationalredirects-import-card-body .redirect-count {
+	margin: 10px 0 0;
+	font-size: 13px;
+}
+
+.rationalredirects-import-card-body .redirect-count strong {
+	color: #2271b1;
+}
+
+.rationalredirects-import-card-footer {
+	padding: 15px;
+	background: #f9f9f9;
+	border-top: 1px solid #ddd;
+}
+
+/* Import Modal */
+.rationalredirects-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.7);
+	z-index: 100000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.rationalredirects-modal-content {
+	background: #fff;
+	border-radius: 4px;
+	width: 90%;
+	max-width: 600px;
+	max-height: 80vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.rationalredirects-modal-header {
+	padding: 15px 20px;
+	background: #f9f9f9;
+	border-bottom: 1px solid #ddd;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.rationalredirects-modal-header h3 {
+	margin: 0;
+}
+
+.rationalredirects-modal-close {
+	background: none;
+	border: none;
+	font-size: 24px;
+	cursor: pointer;
+	color: #666;
+}
+
+.rationalredirects-modal-close:hover {
+	color: #d63638;
+}
+
+.rationalredirects-modal-body {
+	padding: 20px;
+	overflow-y: auto;
+	flex: 1;
+}
+
+.rationalredirects-modal-body .notice {
+	margin: 0;
+}
+
+.rationalredirects-modal-footer {
+	padding: 15px 20px;
+	background: #f9f9f9;
+	border-top: 1px solid #ddd;
+	text-align: right;
+}
+
+.rationalredirects-modal-footer .button {
+	margin-left: 10px;
+}
+
+/* Import Preview */
+.rationalredirects-import-options {
+	margin-bottom: 20px;
+	padding: 15px;
+	background: #f9f9f9;
+	border-radius: 4px;
+}
+
+.rationalredirects-import-preview h4 {
+	margin: 20px 0 10px;
+}
+
+.rationalredirects-import-preview table {
+	margin-top: 10px;
+}
+
+.rationalredirects-import-preview table td {
+	max-width: 200px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.rationalredirects-import-preview .more-items {
+	font-style: italic;
+	color: #666;
+}
