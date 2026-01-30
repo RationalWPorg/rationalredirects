@@ -5,8 +5,8 @@ Lightweight WordPress plugin for URL redirects with regex support and automatic 
 ## Local Development Environment
 
 - **URL:** https://development.local/wp-admin/
-- **Username:** claude
-- **Password:** &FKHRV4znkXt*SWn5k%IYTmN
+- **Username:** `claude`
+- **Password:** `!JJ8itliI3%#YC)NRnQl2*)M`
 - All `npm`/`npx` commands: prefix with `NODE_ENV=development`
 
 ## Key Classes

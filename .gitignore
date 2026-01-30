@@ -1,0 +1,24 @@
+# Build artifacts
+*.zip
+build/
+
+# Node.js
+node_modules/
+
+# Composer
+vendor/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.*
