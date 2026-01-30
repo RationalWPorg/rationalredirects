@@ -245,8 +245,13 @@ class RationalRedirects_Redirects {
 	 * @return string The prepared regex pattern with delimiters.
 	 */
 	private function prepare_regex_pattern( $pattern ) {
+		// Strip user-provided anchors to avoid duplication (e.g., ^^pattern$$).
+		$pattern = preg_replace( '/^\^/', '', $pattern );
+		$pattern = preg_replace( '/\$$/', '', $pattern );
+
 		// Escape delimiters if present in the pattern.
 		$pattern = str_replace( '~', '\~', $pattern );
+
 		// Add delimiters and anchors for full path matching.
 		return '~^' . $pattern . '$~';
 	}

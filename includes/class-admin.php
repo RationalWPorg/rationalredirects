@@ -272,10 +272,10 @@ class RationalRedirects_Admin {
 				<tbody id="rationalredirects-list">
 					<tr class="rationalredirects-add-row">
 						<td>
-							<input type="text" id="rationalredirects-new-from" placeholder="/old-url/" class="regular-text">
+							<input type="text" id="rationalredirects-new-from" placeholder="/old-url" class="regular-text">
 						</td>
 						<td>
-							<input type="url" id="rationalredirects-new-to" placeholder="<?php echo esc_attr( home_url( '/new-url/' ) ); ?>" class="regular-text">
+							<input type="url" id="rationalredirects-new-to" placeholder="<?php echo esc_attr( home_url( '/new-url' ) ); ?>" class="regular-text">
 						</td>
 						<td>
 							<select id="rationalredirects-new-status">

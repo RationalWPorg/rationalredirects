@@ -56,6 +56,19 @@ Request → template_redirect (priority 1) → maybe_redirect()
 Increment hit counter → wp_safe_redirect() → exit
 ```
 
+## Regex Pattern Handling
+
+Regex patterns are automatically anchored with `^` and `$` for full path matching. User-provided anchors are stripped to prevent duplication.
+
+**Examples:**
+| User Input | Prepared Pattern |
+|------------|------------------|
+| `/blog/(.*)` | `~^/blog/(.*)$~` |
+| `^/blog/(.*)` | `~^/blog/(.*)$~` |
+| `/blog/(.*)$` | `~^/blog/(.*)$~` |
+
+Capture groups can be used in the destination URL with `$1`, `$2`, etc.
+
 ## AJAX Actions
 
 | Action | Handler | Purpose |
