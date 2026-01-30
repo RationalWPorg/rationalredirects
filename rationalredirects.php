@@ -32,6 +32,17 @@ require_once RATIONALREDIRECTS_PLUGIN_DIR . 'includes/class-admin.php';
 require_once RATIONALREDIRECTS_PLUGIN_DIR . 'includes/class-activator.php';
 require_once RATIONALREDIRECTS_PLUGIN_DIR . 'includes/class-rationalredirects.php';
 
+// Load import system.
+require_once RATIONALREDIRECTS_PLUGIN_DIR . 'includes/import/interface-importer.php';
+require_once RATIONALREDIRECTS_PLUGIN_DIR . 'includes/import/class-import-result.php';
+require_once RATIONALREDIRECTS_PLUGIN_DIR . 'includes/import/class-import-manager.php';
+require_once RATIONALREDIRECTS_PLUGIN_DIR . 'includes/import/class-import-admin.php';
+require_once RATIONALREDIRECTS_PLUGIN_DIR . 'includes/import/importers/class-yoast-importer.php';
+require_once RATIONALREDIRECTS_PLUGIN_DIR . 'includes/import/importers/class-rankmath-importer.php';
+require_once RATIONALREDIRECTS_PLUGIN_DIR . 'includes/import/importers/class-aioseo-importer.php';
+require_once RATIONALREDIRECTS_PLUGIN_DIR . 'includes/import/importers/class-seopress-importer.php';
+require_once RATIONALREDIRECTS_PLUGIN_DIR . 'includes/import/importers/class-redirection-importer.php';
+
 // Register activation and deactivation hooks.
 register_activation_hook( __FILE__, array( 'RationalRedirects_Activator', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'RationalRedirects_Activator', 'deactivate' ) );

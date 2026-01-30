@@ -131,6 +131,9 @@ class RationalRedirects_Admin {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$active_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'redirects';
 		?>
 		<div class="wrap rationalredirects-settings">
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
@@ -142,15 +145,37 @@ class RationalRedirects_Admin {
 				</div>
 			<?php endif; ?>
 
-			<form action="options.php" method="post">
-				<?php
-				settings_fields( 'rationalredirects_settings_group' );
-				do_settings_sections( 'rationalredirects' );
-				submit_button( __( 'Save Settings', 'rationalredirects' ) );
-				?>
-			</form>
+			<nav class="nav-tab-wrapper">
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=rationalredirects&tab=redirects' ) ); ?>"
+				   class="nav-tab <?php echo 'redirects' === $active_tab ? 'nav-tab-active' : ''; ?>">
+					<?php esc_html_e( 'Redirects', 'rationalredirects' ); ?>
+				</a>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=rationalredirects&tab=settings' ) ); ?>"
+				   class="nav-tab <?php echo 'settings' === $active_tab ? 'nav-tab-active' : ''; ?>">
+					<?php esc_html_e( 'Settings', 'rationalredirects' ); ?>
+				</a>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=rationalredirects&tab=import' ) ); ?>"
+				   class="nav-tab <?php echo 'import' === $active_tab ? 'nav-tab-active' : ''; ?>">
+					<?php esc_html_e( 'Import', 'rationalredirects' ); ?>
+				</a>
+			</nav>
 
-			<?php $this->render_redirect_manager(); ?>
+			<div class="rationalredirects-tab-content">
+				<?php
+				switch ( $active_tab ) {
+					case 'settings':
+						$this->render_settings_tab();
+						break;
+					case 'import':
+						$this->render_import_tab();
+						break;
+					case 'redirects':
+					default:
+						$this->render_redirect_manager();
+						break;
+				}
+				?>
+			</div>
 		</div>
 
 		<script type="text/javascript">
@@ -163,12 +188,37 @@ class RationalRedirects_Admin {
 				}, 4000);
 
 				// Clean URL without page reload.
-				var newUrl = window.location.pathname + '?page=rationalredirects';
+				var newUrl = window.location.pathname + '?page=rationalredirects&tab=settings';
 				window.history.replaceState({}, '', newUrl);
 			}
 		});
 		</script>
 		<?php
+	}
+
+	/**
+	 * Render the settings tab content.
+	 */
+	private function render_settings_tab() {
+		?>
+		<form action="options.php" method="post">
+			<?php
+			settings_fields( 'rationalredirects_settings_group' );
+			do_settings_sections( 'rationalredirects' );
+			submit_button( __( 'Save Settings', 'rationalredirects' ) );
+			?>
+		</form>
+		<?php
+	}
+
+	/**
+	 * Render the import tab content.
+	 */
+	private function render_import_tab() {
+		$import_admin = RationalRedirects::get_instance()->get_import_admin();
+		if ( $import_admin ) {
+			$import_admin->render_import_tab();
+		}
 	}
 
 	/**

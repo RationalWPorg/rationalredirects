@@ -40,6 +40,20 @@ class RationalRedirects {
 	private $admin;
 
 	/**
+	 * Import manager instance.
+	 *
+	 * @var RationalRedirects_Import_Manager
+	 */
+	private $import_manager;
+
+	/**
+	 * Import admin instance.
+	 *
+	 * @var RationalRedirects_Import_Admin
+	 */
+	private $import_admin;
+
+	/**
 	 * Get the singleton instance.
 	 *
 	 * @return RationalRedirects
@@ -55,11 +69,13 @@ class RationalRedirects {
 	 * Constructor.
 	 */
 	private function __construct() {
-		$this->settings  = new RationalRedirects_Settings();
-		$this->redirects = new RationalRedirects_Redirects( $this->settings );
+		$this->settings       = new RationalRedirects_Settings();
+		$this->redirects      = new RationalRedirects_Redirects( $this->settings );
+		$this->import_manager = new RationalRedirects_Import_Manager( $this->redirects );
 
 		if ( is_admin() ) {
-			$this->admin = new RationalRedirects_Admin( $this->settings, $this->redirects );
+			$this->admin        = new RationalRedirects_Admin( $this->settings, $this->redirects );
+			$this->import_admin = new RationalRedirects_Import_Admin( $this->import_manager );
 		}
 	}
 
@@ -88,5 +104,23 @@ class RationalRedirects {
 	 */
 	public function get_admin() {
 		return $this->admin;
+	}
+
+	/**
+	 * Get import manager instance.
+	 *
+	 * @return RationalRedirects_Import_Manager
+	 */
+	public function get_import_manager() {
+		return $this->import_manager;
+	}
+
+	/**
+	 * Get import admin instance.
+	 *
+	 * @return RationalRedirects_Import_Admin|null
+	 */
+	public function get_import_admin() {
+		return $this->import_admin;
 	}
 }
