@@ -15,9 +15,9 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 global $wpdb;
 
 // Delete the redirects table.
-$table_name = $wpdb->prefix . 'rationalredirects_redirects';
-// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
-$wpdb->query( "DROP TABLE IF EXISTS {$table_name}" );
+$rationalredirects_table = $wpdb->prefix . 'rationalredirects_redirects';
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+$wpdb->query( "DROP TABLE IF EXISTS `{$rationalredirects_table}`" );
 
 // Delete plugin options.
 delete_option( 'rationalredirects_settings' );
