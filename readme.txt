@@ -56,12 +56,6 @@ When enabled in settings, the plugin monitors changes to post and page URLs. Whe
 
 Yes! The Import tab supports importing from Yoast SEO Premium, Rank Math, All in One SEO, SEOPress, and Redirection.
 
-== Screenshots ==
-
-1. Redirect management interface
-2. Settings page
-3. Import interface
-
 == Changelog ==
 
 = 1.0.0 =

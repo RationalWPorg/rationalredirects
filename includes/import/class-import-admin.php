@@ -41,13 +41,68 @@ class RationalRedirects_Import_Admin {
 		add_action( 'wp_ajax_rationalredirects_get_importers', array( $this, 'ajax_get_importers' ) );
 		add_action( 'wp_ajax_rationalredirects_preview_import', array( $this, 'ajax_preview_import' ) );
 		add_action( 'wp_ajax_rationalredirects_run_import', array( $this, 'ajax_run_import' ) );
+
+		// Admin assets.
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+	}
+
+	/**
+	 * Enqueue import admin scripts.
+	 *
+	 * @param string $hook Current admin page hook.
+	 */
+	public function enqueue_scripts( $hook ) {
+		if ( 'rationalwp_page_rationalredirects' !== $hook ) {
+			return;
+		}
+
+		wp_enqueue_script(
+			'rationalredirects-admin-import',
+			RATIONALREDIRECTS_PLUGIN_URL . 'assets/js/admin-import.js',
+			array( 'jquery' ),
+			RATIONALREDIRECTS_VERSION,
+			true
+		);
+
+		wp_localize_script(
+			'rationalredirects-admin-import',
+			'rationalredirectsImport',
+			array(
+				'nonce'   => wp_create_nonce( 'rationalredirects_import' ),
+				'strings' => array(
+					'noImporters'        => __( 'No plugins with importable redirects detected.', 'rationalredirects' ),
+					'supportedPlugins'   => __( 'RationalRedirects can import redirects from Yoast SEO Premium, Rank Math, AIOSEO, SEOPress, and the Redirection plugin.', 'rationalredirects' ),
+					'redirectsAvailable' => __( 'redirects available', 'rationalredirects' ),
+					'noRedirects'        => __( 'No redirects to import', 'rationalredirects' ),
+					'importRedirects'    => __( 'Import Redirects', 'rationalredirects' ),
+					'noData'             => __( 'No Data', 'rationalredirects' ),
+					'importFrom'         => __( 'Import from', 'rationalredirects' ),
+					'loadingPreview'     => __( 'Loading preview...', 'rationalredirects' ),
+					'skipExisting'       => __( 'Skip redirects that already exist (recommended)', 'rationalredirects' ),
+					'willBeImported'     => __( 'redirects will be imported.', 'rationalredirects' ),
+					'preview'            => __( 'Preview:', 'rationalredirects' ),
+					'colFrom'            => __( 'From', 'rationalredirects' ),
+					'colTo'              => __( 'To', 'rationalredirects' ),
+					'colType'            => __( 'Type', 'rationalredirects' ),
+					'colRegex'           => __( 'Regex', 'rationalredirects' ),
+					'yes'                => __( 'Yes', 'rationalredirects' ),
+					'gone'               => __( '(Gone)', 'rationalredirects' ),
+					'and'                => __( 'And', 'rationalredirects' ),
+					'more'               => __( 'more...', 'rationalredirects' ),
+					'loadFailed'         => __( 'Failed to load importers. Please refresh the page.', 'rationalredirects' ),
+					'previewFailed'      => __( 'Failed to load preview. Please try again.', 'rationalredirects' ),
+					'importing'          => __( 'Importing redirects...', 'rationalredirects' ),
+					'importingBtn'       => __( 'Importing...', 'rationalredirects' ),
+					'importFailed'       => __( 'Import failed. Please try again.', 'rationalredirects' ),
+				),
+			)
+		);
 	}
 
 	/**
 	 * Render the import tab content.
 	 */
 	public function render_import_tab() {
-		$nonce = wp_create_nonce( 'rationalredirects_import' );
 		?>
 		<div class="rationalredirects-import-wrap">
 			<h2><?php esc_html_e( 'Import Redirects', 'rationalredirects' ); ?></h2>
@@ -96,243 +151,6 @@ class RationalRedirects_Import_Admin {
 				</div>
 			</div>
 		</div>
-
-		<script type="text/javascript">
-		(function($) {
-			var nonce = '<?php echo esc_js( $nonce ); ?>';
-			var currentImporter = null;
-
-			// Load importers on page load.
-			$(document).ready(function() {
-				loadImporters();
-			});
-
-			function loadImporters() {
-				$.post(ajaxurl, {
-					action: 'rationalredirects_get_importers',
-					nonce: nonce
-				}, function(response) {
-					var $container = $('#rationalredirects-import-sources');
-					$container.empty();
-
-					if (!response.success) {
-						$container.html('<div class="notice notice-error"><p>' + escapeHtml(response.data.message) + '</p></div>');
-						return;
-					}
-
-					var importers = response.data.importers;
-					if (Object.keys(importers).length === 0) {
-						$container.html(
-							'<div class="rationalredirects-import-empty">' +
-								'<span class="dashicons dashicons-info"></span>' +
-								'<p><?php echo esc_js( __( 'No plugins with importable redirects detected.', 'rationalredirects' ) ); ?></p>' +
-								'<p class="description"><?php echo esc_js( __( 'RationalRedirects can import redirects from Yoast SEO Premium, Rank Math, AIOSEO, SEOPress, and the Redirection plugin.', 'rationalredirects' ) ); ?></p>' +
-							'</div>'
-						);
-						return;
-					}
-
-					// Render importer cards.
-					var html = '<div class="rationalredirects-import-grid">';
-					for (var slug in importers) {
-						var importer = importers[slug];
-						html += renderImporterCard(importer);
-					}
-					html += '</div>';
-					$container.html(html);
-
-					// Bind click handlers.
-					$('.rationalredirects-import-card-action').on('click', function() {
-						var slug = $(this).data('slug');
-						openImportModal(slug, importers[slug]);
-					});
-				}).fail(function() {
-					$('#rationalredirects-import-sources').html(
-						'<div class="notice notice-error"><p><?php echo esc_js( __( 'Failed to load importers. Please refresh the page.', 'rationalredirects' ) ); ?></p></div>'
-					);
-				});
-			}
-
-			function renderImporterCard(importer) {
-				var countHtml = importer.count > 0
-					? '<p class="redirect-count"><span class="dashicons dashicons-yes-alt"></span> <strong>' + importer.count + '</strong> <?php echo esc_js( __( 'redirects available', 'rationalredirects' ) ); ?></p>'
-					: '<p class="redirect-count"><?php echo esc_js( __( 'No redirects to import', 'rationalredirects' ) ); ?></p>';
-
-				return '<div class="rationalredirects-import-card">' +
-					'<div class="rationalredirects-import-card-header">' +
-						'<h3>' + escapeHtml(importer.name) + '</h3>' +
-					'</div>' +
-					'<div class="rationalredirects-import-card-body">' +
-						'<p class="description">' + escapeHtml(importer.description) + '</p>' +
-						countHtml +
-					'</div>' +
-					'<div class="rationalredirects-import-card-footer">' +
-						(importer.count > 0 ?
-							'<button type="button" class="button button-primary rationalredirects-import-card-action" data-slug="' + escapeHtml(importer.slug) + '">' +
-								'<?php echo esc_js( __( 'Import Redirects', 'rationalredirects' ) ); ?>' +
-							'</button>' :
-							'<button type="button" class="button" disabled><?php echo esc_js( __( 'No Data', 'rationalredirects' ) ); ?></button>'
-						) +
-					'</div>' +
-				'</div>';
-			}
-
-			function openImportModal(slug, importer) {
-				currentImporter = slug;
-				var $modal = $('#rationalredirects-import-modal');
-
-				// Reset modal state.
-				$('#rationalredirects-import-modal-title').text(
-					'<?php echo esc_js( __( 'Import from', 'rationalredirects' ) ); ?> ' + importer.name
-				);
-				$('#rationalredirects-import-modal-loading').show();
-				$('#rationalredirects-import-modal-loading-text').text('<?php echo esc_js( __( 'Loading preview...', 'rationalredirects' ) ); ?>');
-				$('#rationalredirects-import-modal-content').hide().empty();
-				$('#rationalredirects-import-modal-error').hide();
-				$('#rationalredirects-import-modal-result').hide();
-				$('#rationalredirects-import-modal-confirm').hide().prop('disabled', false).text('<?php echo esc_js( __( 'Import Redirects', 'rationalredirects' ) ); ?>');
-				$('#rationalredirects-import-modal-done').hide();
-				$('#rationalredirects-import-modal-cancel').show();
-
-				$modal.css('display', 'flex');
-
-				// Load preview.
-				$.post(ajaxurl, {
-					action: 'rationalredirects_preview_import',
-					nonce: nonce,
-					importer: slug
-				}, function(response) {
-					$('#rationalredirects-import-modal-loading').hide();
-
-					if (!response.success) {
-						showModalError(response.data.message);
-						return;
-					}
-
-					renderPreview(importer, response.data);
-				}).fail(function() {
-					$('#rationalredirects-import-modal-loading').hide();
-					showModalError('<?php echo esc_js( __( 'Failed to load preview. Please try again.', 'rationalredirects' ) ); ?>');
-				});
-			}
-
-			function renderPreview(importer, data) {
-				var html = '<div class="rationalredirects-import-preview">';
-
-				// Options.
-				html += '<div class="rationalredirects-import-options">';
-				html += '<label><input type="checkbox" id="rationalredirects-import-skip-existing" checked> ';
-				html += '<?php echo esc_js( __( 'Skip redirects that already exist (recommended)', 'rationalredirects' ) ); ?></label>';
-				html += '</div>';
-
-				// Summary.
-				html += '<p><strong>' + data.preview_data.total + '</strong> <?php echo esc_js( __( 'redirects will be imported.', 'rationalredirects' ) ); ?></p>';
-
-				// Preview table.
-				if (data.preview_data.samples && data.preview_data.samples.length > 0) {
-					html += '<h4><?php echo esc_js( __( 'Preview:', 'rationalredirects' ) ); ?></h4>';
-					html += '<table class="widefat striped"><thead><tr>';
-					html += '<th><?php echo esc_js( __( 'From', 'rationalredirects' ) ); ?></th>';
-					html += '<th><?php echo esc_js( __( 'To', 'rationalredirects' ) ); ?></th>';
-					html += '<th><?php echo esc_js( __( 'Type', 'rationalredirects' ) ); ?></th>';
-					html += '<th><?php echo esc_js( __( 'Regex', 'rationalredirects' ) ); ?></th>';
-					html += '</tr></thead><tbody>';
-
-					for (var i = 0; i < data.preview_data.samples.length; i++) {
-						var sample = data.preview_data.samples[i];
-						html += '<tr>';
-						html += '<td title="' + escapeHtml(sample.url_from) + '">' + escapeHtml(sample.url_from) + '</td>';
-						html += '<td title="' + escapeHtml(sample.url_to || '') + '">' + escapeHtml(sample.url_to || '(Gone)') + '</td>';
-						html += '<td>' + sample.status_code + '</td>';
-						html += '<td>' + (sample.is_regex ? '<?php echo esc_js( __( 'Yes', 'rationalredirects' ) ); ?>' : '&mdash;') + '</td>';
-						html += '</tr>';
-					}
-
-					if (data.preview_data.total > data.preview_data.samples.length) {
-						html += '<tr><td colspan="4" class="more-items">';
-						html += '<?php echo esc_js( __( 'And', 'rationalredirects' ) ); ?> ' + (data.preview_data.total - data.preview_data.samples.length) + ' <?php echo esc_js( __( 'more...', 'rationalredirects' ) ); ?>';
-						html += '</td></tr>';
-					}
-
-					html += '</tbody></table>';
-				}
-
-				html += '</div>';
-
-				$('#rationalredirects-import-modal-content').html(html).show();
-				$('#rationalredirects-import-modal-confirm').show();
-			}
-
-			function showModalError(message) {
-				$('#rationalredirects-import-modal-error').show().find('p').text(message);
-				$('#rationalredirects-import-modal-done').show();
-				$('#rationalredirects-import-modal-cancel').hide();
-			}
-
-			function showModalSuccess(message) {
-				$('#rationalredirects-import-modal-result').show().find('p').text(message);
-				$('#rationalredirects-import-modal-done').show();
-				$('#rationalredirects-import-modal-cancel').hide();
-				$('#rationalredirects-import-modal-confirm').hide();
-			}
-
-			// Modal close handlers.
-			$('.rationalredirects-modal-close, #rationalredirects-import-modal-cancel, #rationalredirects-import-modal-done').on('click', function() {
-				$('#rationalredirects-import-modal').hide();
-				currentImporter = null;
-			});
-
-			$('#rationalredirects-import-modal').on('click', function(e) {
-				if ($(e.target).is('#rationalredirects-import-modal')) {
-					$(this).hide();
-					currentImporter = null;
-				}
-			});
-
-			// Import confirmation.
-			$('#rationalredirects-import-modal-confirm').on('click', function() {
-				if (!currentImporter) return;
-
-				var skipExisting = $('#rationalredirects-import-skip-existing').is(':checked');
-
-				// Show loading state.
-				$('#rationalredirects-import-modal-content').hide();
-				$('#rationalredirects-import-modal-loading').show();
-				$('#rationalredirects-import-modal-loading-text').text('<?php echo esc_js( __( 'Importing redirects...', 'rationalredirects' ) ); ?>');
-				$('#rationalredirects-import-modal-confirm').prop('disabled', true).text('<?php echo esc_js( __( 'Importing...', 'rationalredirects' ) ); ?>');
-				$('#rationalredirects-import-modal-cancel').hide();
-
-				$.post(ajaxurl, {
-					action: 'rationalredirects_run_import',
-					nonce: nonce,
-					importer: currentImporter,
-					skip_existing: skipExisting ? '1' : '0'
-				}, function(response) {
-					$('#rationalredirects-import-modal-loading').hide();
-
-					if (!response.success) {
-						showModalError(response.data.message);
-						return;
-					}
-
-					showModalSuccess(response.data.message);
-
-					// Reload importers to update counts.
-					loadImporters();
-				}).fail(function() {
-					$('#rationalredirects-import-modal-loading').hide();
-					showModalError('<?php echo esc_js( __( 'Import failed. Please try again.', 'rationalredirects' ) ); ?>');
-				});
-			});
-
-			function escapeHtml(text) {
-				if (!text) return '';
-				var div = document.createElement('div');
-				div.appendChild(document.createTextNode(text));
-				return div.innerHTML;
-			}
-		})(jQuery);
-		</script>
 		<?php
 	}
 

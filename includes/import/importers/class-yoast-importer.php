@@ -185,9 +185,13 @@ class RationalRedirects_Yoast_Redirects_Importer implements RationalRedirects_Im
 
 		if ( empty( $redirects ) ) {
 			global $wpdb;
+			$like_pattern = $wpdb->esc_like( 'wpseo' ) . '%' . $wpdb->esc_like( 'redirect' ) . '%';
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$option_row = $wpdb->get_row(
-				"SELECT option_value FROM {$wpdb->options} WHERE option_name LIKE 'wpseo%redirect%' AND option_value != '' LIMIT 1"
+				$wpdb->prepare(
+					"SELECT option_value FROM {$wpdb->options} WHERE option_name LIKE %s AND option_value != '' LIMIT 1",
+					$like_pattern
+				)
 			);
 			if ( $option_row && ! empty( $option_row->option_value ) ) {
 				$maybe_redirects = maybe_unserialize( $option_row->option_value );

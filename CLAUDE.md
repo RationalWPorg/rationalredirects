@@ -89,6 +89,18 @@ Capture groups can be used in the destination URL with `$1`, `$2`, etc.
 |-----|-----|---------|
 | `rationalredirects_regex_redirects` | 1 hour | Cached regex redirects |
 
+## Admin Assets
+
+**CSS:** `assets/css/admin.css` — enqueued via `wp_enqueue_style()` on plugin page only.
+
+**JavaScript:**
+| Script | Handle | Localized Object | Enqueued By |
+|--------|--------|-------------------|-------------|
+| `assets/js/admin-redirects.js` | `rationalredirects-admin-redirects` | `rationalredirectsRedirects` | `RationalRedirects_Admin` |
+| `assets/js/admin-import.js` | `rationalredirects-admin-import` | `rationalredirectsImport` | `RationalRedirects_Import_Admin` |
+
+All scripts are enqueued with `wp_enqueue_script()` (dependency: `jquery`, loaded in footer). PHP data (nonces, translated strings) is passed via `wp_localize_script()`. No inline JavaScript.
+
 ## Admin Menu
 
 Registered under shared RationalWP parent menu:

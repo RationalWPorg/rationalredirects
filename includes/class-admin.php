@@ -122,6 +122,32 @@ class RationalRedirects_Admin {
 			array(),
 			RATIONALREDIRECTS_VERSION
 		);
+
+		wp_enqueue_script(
+			'rationalredirects-admin-redirects',
+			RATIONALREDIRECTS_PLUGIN_URL . 'assets/js/admin-redirects.js',
+			array( 'jquery' ),
+			RATIONALREDIRECTS_VERSION,
+			true
+		);
+
+		wp_localize_script(
+			'rationalredirects-admin-redirects',
+			'rationalredirectsRedirects',
+			array(
+				'nonce'   => wp_create_nonce( 'rationalredirects_nonce' ),
+				'strings' => array(
+					'enterSourceUrl' => __( 'Please enter a source URL.', 'rationalredirects' ),
+					'enterDestUrl'   => __( 'Please enter a destination URL.', 'rationalredirects' ),
+					'gone'           => __( '(Gone)', 'rationalredirects' ),
+					'yes'            => __( 'Yes', 'rationalredirects' ),
+					'noRedirects'    => __( 'No redirects found. Add one above.', 'rationalredirects' ),
+					'deleteBtn'      => __( 'Delete', 'rationalredirects' ),
+					'error'          => __( 'An error occurred. Please try again.', 'rationalredirects' ),
+					'confirmDelete'  => __( 'Are you sure you want to delete this redirect?', 'rationalredirects' ),
+				),
+			)
+		);
 	}
 
 	/**
@@ -177,22 +203,6 @@ class RationalRedirects_Admin {
 				?>
 			</div>
 		</div>
-
-		<script type="text/javascript">
-		jQuery(document).ready(function($) {
-			// Auto-hide settings saved message after 4 seconds.
-			var $msg = $('.rationalredirects-settings-saved');
-			if ($msg.length) {
-				setTimeout(function() {
-					$msg.fadeOut(300);
-				}, 4000);
-
-				// Clean URL without page reload.
-				var newUrl = window.location.pathname + '?page=rationalredirects&tab=settings';
-				window.history.replaceState({}, '', newUrl);
-			}
-		});
-		</script>
 		<?php
 	}
 
@@ -251,7 +261,6 @@ class RationalRedirects_Admin {
 	 */
 	private function render_redirect_manager() {
 		$redirects = $this->redirects->get_all_redirects();
-		$nonce     = wp_create_nonce( 'rationalredirects_nonce' );
 		?>
 		<div class="rationalredirects-redirect-header">
 			<h2><?php esc_html_e( 'Redirect Manager', 'rationalredirects' ); ?></h2>
@@ -333,134 +342,8 @@ class RationalRedirects_Admin {
 				</tbody>
 			</table>
 
-			<div id="rationalredirects-message" class="notice" style="display: none;"></div>
+			<div id="rationalredirects-message" class="notice" style="display: none;"><p></p></div>
 		</div>
-
-		<script type="text/javascript">
-		(function($) {
-			var nonce = '<?php echo esc_js( $nonce ); ?>';
-			var homeUrl = '<?php echo esc_js( home_url() ); ?>';
-
-			// Add redirect.
-			$('#rationalredirects-add-redirect').on('click', function() {
-				var $btn = $(this);
-				var urlFrom = $('#rationalredirects-new-from').val().trim();
-				var urlTo = $('#rationalredirects-new-to').val().trim();
-				var statusCode = $('#rationalredirects-new-status').val();
-				var isRegex = $('#rationalredirects-new-regex').is(':checked') ? '1' : '0';
-
-				if (!urlFrom) {
-					showMessage('<?php echo esc_js( __( 'Please enter a source URL.', 'rationalredirects' ) ); ?>', 'error');
-					return;
-				}
-
-				if (statusCode !== '410' && !urlTo) {
-					showMessage('<?php echo esc_js( __( 'Please enter a destination URL.', 'rationalredirects' ) ); ?>', 'error');
-					return;
-				}
-
-				$btn.prop('disabled', true);
-
-				$.post(ajaxurl, {
-					action: 'rationalredirects_add_redirect',
-					nonce: nonce,
-					url_from: urlFrom,
-					url_to: urlTo,
-					status_code: statusCode,
-					is_regex: isRegex
-				}, function(response) {
-					$btn.prop('disabled', false);
-
-					if (response.success) {
-						var redirect = response.data.redirect;
-						var toDisplay = statusCode === '410'
-							? '<em><?php echo esc_js( __( '(Gone)', 'rationalredirects' ) ); ?></em>'
-							: '<a href="' + redirect.url_to + '" target="_blank" rel="noopener">' + redirect.url_to + '</a>';
-						var regexDisplay = redirect.is_regex == 1
-							? '<span class="rationalredirects-regex-badge"><?php echo esc_js( __( 'Yes', 'rationalredirects' ) ); ?></span>'
-							: '&mdash;';
-
-						var newRow = '<tr data-id="' + redirect.id + '">' +
-							'<td class="column-from"><code>' + redirect.url_from + '</code></td>' +
-							'<td class="column-to">' + toDisplay + '</td>' +
-							'<td class="column-status">' + redirect.status_code + '</td>' +
-							'<td class="column-regex">' + regexDisplay + '</td>' +
-							'<td class="column-hits">0</td>' +
-							'<td class="column-actions">' +
-								'<button type="button" class="button button-link-delete rationalredirects-delete-redirect" data-id="' + redirect.id + '">' +
-									'<?php echo esc_js( __( 'Delete', 'rationalredirects' ) ); ?>' +
-								'</button>' +
-							'</td>' +
-						'</tr>';
-
-						$('.rationalredirects-add-row').after(newRow);
-						$('.no-redirects').remove();
-
-						// Clear inputs.
-						$('#rationalredirects-new-from').val('');
-						$('#rationalredirects-new-to').val('');
-						$('#rationalredirects-new-status').val('301');
-						$('#rationalredirects-new-regex').prop('checked', false);
-
-						showMessage(response.data.message, 'success');
-					} else {
-						showMessage(response.data.message, 'error');
-					}
-				}).fail(function() {
-					$btn.prop('disabled', false);
-					showMessage('<?php echo esc_js( __( 'An error occurred. Please try again.', 'rationalredirects' ) ); ?>', 'error');
-				});
-			});
-
-			// Delete redirect.
-			$(document).on('click', '.rationalredirects-delete-redirect', function() {
-				var $btn = $(this);
-				var id = $btn.data('id');
-
-				if (!confirm('<?php echo esc_js( __( 'Are you sure you want to delete this redirect?', 'rationalredirects' ) ); ?>')) {
-					return;
-				}
-
-				$btn.prop('disabled', true);
-
-				$.post(ajaxurl, {
-					action: 'rationalredirects_delete_redirect',
-					nonce: nonce,
-					id: id
-				}, function(response) {
-					if (response.success) {
-						$btn.closest('tr').fadeOut(300, function() {
-							$(this).remove();
-							if ($('#rationalredirects-list tr').length === 1) {
-								$('.rationalredirects-add-row').after(
-									'<tr class="no-redirects"><td colspan="6"><?php echo esc_js( __( 'No redirects found. Add one above.', 'rationalredirects' ) ); ?></td></tr>'
-								);
-							}
-						});
-						showMessage(response.data.message, 'success');
-					} else {
-						$btn.prop('disabled', false);
-						showMessage(response.data.message, 'error');
-					}
-				}).fail(function() {
-					$btn.prop('disabled', false);
-					showMessage('<?php echo esc_js( __( 'An error occurred. Please try again.', 'rationalredirects' ) ); ?>', 'error');
-				});
-			});
-
-			function showMessage(message, type) {
-				var $msg = $('#rationalredirects-message');
-				$msg.removeClass('notice-success notice-error')
-					.addClass('notice-' + type)
-					.html('<p>' + message + '</p>')
-					.fadeIn();
-
-				setTimeout(function() {
-					$msg.fadeOut();
-				}, 4000);
-			}
-		})(jQuery);
-		</script>
 		<?php
 	}
 }
