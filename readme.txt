@@ -56,6 +56,18 @@ When enabled in settings, the plugin monitors changes to post and page URLs. Whe
 
 Yes! The Import tab supports importing from Yoast SEO Premium, Rank Math, All in One SEO, SEOPress, and Redirection.
 
+== External Services ==
+
+This plugin connects to the following external services:
+
+= RationalWP Plugin Directory =
+
+This plugin fetches a list of available RationalWP plugins from [rationalwp.com](https://rationalwp.com/) to display in the WordPress admin menu. Only the menu file version number is sent as a cache-busting query parameter. No user data is transmitted. The response is cached locally for 24 hours.
+
+* Service URL: [https://rationalwp.com/plugins.json](https://rationalwp.com/plugins.json)
+* Terms of Service: [https://rationalwp.com/terms/](https://rationalwp.com/terms/)
+* Privacy Policy: [https://rationalwp.com/privacy/](https://rationalwp.com/privacy/)
+
 == Changelog ==
 
 = 1.0.0 =

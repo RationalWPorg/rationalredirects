@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: RationalRedirects
- * Plugin URI: https://rationalwp.com/plugins/rationalredirects
+ * Plugin URI: https://rationalwp.com/plugins/redirects/
  * Description: Simple, fast URL redirects with regex support and automatic slug change tracking.
  * Version: 1.0.0
  * Author: RationalWP

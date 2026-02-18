@@ -25,3 +25,4 @@ delete_option( 'rationalredirects_db_version' );
 
 // Delete transients.
 delete_transient( 'rationalredirects_regex_redirects' );
+delete_transient( 'rationalredirects_plugins_list' );
