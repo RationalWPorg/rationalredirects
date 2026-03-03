@@ -19,6 +19,9 @@ vendor/
 .DS_Store
 Thumbs.db
 
+# Documentation
+docs/
+
 # Environment
 .env
 .env.*
