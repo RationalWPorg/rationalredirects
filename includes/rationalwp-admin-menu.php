@@ -12,7 +12,7 @@
  * only the first loaded version executes, so text domain differences don't conflict.
  *
  * @package RationalWP
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 // Prevent direct access.
