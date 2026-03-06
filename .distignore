@@ -1,0 +1,46 @@
+# Development files
+.git
+.gitignore
+.distignore
+.DS_Store
+Thumbs.db
+
+# Documentation (dev-only)
+CLAUDE.md
+
+# Build tools
+build.sh
+build
+
+# Archives
+*.zip
+
+# Dependencies
+node_modules
+vendor
+
+# IDE/Editor
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.*
+
+# Tests and QA
+tests
+phpunit.xml
+phpcs.xml
+
+# JS/PHP tooling configs
+composer.json
+composer.lock
+package.json
+package-lock.json
+webpack.config.js
+
+# WordPress.org assets (synced separately to SVN assets/)
+.wordpress-org
