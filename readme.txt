@@ -2,9 +2,9 @@
 Contributors: rationalwp
 Tags: redirect, 301 redirect, 302 redirect, url redirect, regex redirect
 Requires at least: 5.0
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -69,6 +69,9 @@ This plugin fetches a list of available RationalWP plugins from [rationalwp.com]
 * Privacy Policy: [https://rationalwp.com/privacy/](https://rationalwp.com/privacy/)
 
 == Changelog ==
+
+= 1.0.2 =
+* Tested up to WordPress 7.0.
 
 = 1.0.1 =
 * Fixing plugin URL
